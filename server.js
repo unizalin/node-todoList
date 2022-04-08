@@ -59,9 +59,13 @@ const requestListener = (request , response) =>{
       "data":[]
     }));
     response.end()
-  }else if(request.url == '/' && request.method == 'DELETE'){
+  }else if(request.url == '/todos' && request.method == 'DELETE'){
+    todos.length=0
     response.writeHead(200, headers);
-    response.write("Delete!");
+    response.write(JSON.stringify({
+      "status":"success",
+      "data":[],
+    }));    
     response.end();
   }else {
     response.writeHead(404, headers);
