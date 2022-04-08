@@ -27,19 +27,37 @@ const requestListener = (request , response) =>{
     response.end();
   }else if(request.url == '/todos' && request.method == 'POST'){
     request.on('end',()=>{
-      const title = JSON.parse(body).title
-      console.log(title)
-      const todo = {
-        "title" : title,
-        "id" : uuidv4()
+      try{
+        const title = JSON.parse(body).title
+        if(title !==undefined){
+          const todo = {
+            "title" : title,
+            "id" : uuidv4()
+          }
+          todos.push(todo)
+          response.writeHead(200, headers);
+          response.write(JSON.stringify({
+            "status":"success",
+            "data": todos
+          }));
+        }else{
+          response.writeHead(400, headers);
+          response.write(JSON.stringify({
+            "status":"false",
+            "message": "欄位填寫錯誤，或無此 todo id"
+          }));
+        }
+        response.end()
+      }catch(error){
+        response.writeHead(400, headers);
+        response.write(JSON.stringify({
+          "status":"false",
+          "message": "欄位填寫錯誤，或無此 todo id"
+        }));
+        console.log(error,'程式錯誤')
+        response.end()
       }
-      todos.push(todo)
-      response.writeHead(200, headers);
-      response.write(JSON.stringify({
-        "status":"success",
-        "data": todos
-      }));
-      response.end()
+
     })
   }else if(request.method == 'OPTIONS'){
     response.writeHead(200, headers);
