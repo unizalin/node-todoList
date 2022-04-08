@@ -17,7 +17,6 @@ const requestListener = (request , response) =>{
   request.on('data',chunk=>{
     body+=chunk
   })
- 
   if (request.url == '/todos' && request.method == 'GET'){
     response.writeHead(200, headers);
     response.write(JSON.stringify({
@@ -46,9 +45,7 @@ const requestListener = (request , response) =>{
         response.end()
       }catch(error){
         errorHandle(response)
-
         console.log(error,'程式錯誤')
-        response.end()
       }
 
     })
@@ -67,6 +64,21 @@ const requestListener = (request , response) =>{
       "data":[],
     }));    
     response.end();
+  }else if(request.url.startsWith('/todos/') && request.method == 'DELETE'){
+    const id = request.url.split('/').pop()
+    const index = todos.findIndex(element => element.id == id)
+    console.log(id,index)
+    if(index !== -1){
+      todos.splice(index,1)
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({
+        "status":"success",
+        "data":todos,
+      }));    
+      response.end();
+    }else{
+      errorHandle(response)
+    }
   }else {
     response.writeHead(404, headers);
     response.write(JSON.stringify({
