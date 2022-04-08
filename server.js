@@ -22,11 +22,25 @@ const requestListener = (request , response) =>{
     'Access-Control-Allow-Methods': 'PATCH, POST, GET,OPTIONS,DELETE',
     'Content-Type': 'application/json'
   }
+  let body = ''
+  request.on('data',chunk=>{
+    body+=chunk
+  })
+  request.on('end',()=>{
+    response.end()
+  })
   if (request.url == '/todos' && request.method == 'GET'){
     response.writeHead(200, headers);
     response.write(JSON.stringify({
       "status":"success",
       "data": todos
+    }));
+    response.end();
+  }else if(request.url == '/todos' && request.method == 'POST'){
+    response.writeHead(200, headers);
+    response.write(JSON.stringify({
+      "status":"success",
+      "data": "123"
     }));
     response.end();
   }else if(request.method == 'OPTIONS'){
