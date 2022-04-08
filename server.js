@@ -1,6 +1,6 @@
 var http = require("http");
-
-const {v4:uuidv4} = require("uuid")
+const {v4:uuidv4} = require("uuid");
+const errorHandle = require("./errHandle");
 const todos = []
 console.log('test')
 
@@ -41,19 +41,12 @@ const requestListener = (request , response) =>{
             "data": todos
           }));
         }else{
-          response.writeHead(400, headers);
-          response.write(JSON.stringify({
-            "status":"false",
-            "message": "欄位填寫錯誤，或無此 todo id"
-          }));
+          errorHandle(response)
         }
         response.end()
       }catch(error){
-        response.writeHead(400, headers);
-        response.write(JSON.stringify({
-          "status":"false",
-          "message": "欄位填寫錯誤，或無此 todo id"
-        }));
+        errorHandle(response)
+
         console.log(error,'程式錯誤')
         response.end()
       }
