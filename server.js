@@ -1,16 +1,7 @@
 var http = require("http");
 
-const {v4:uuid4} = require("uuid")
-const todos = [
-  {
-    "title":"今天第一條",
-    "id" : uuid4()
-  },
-  {
-    "title":"今天第二條",
-    "id" : uuid4()
-  }
-]
+const {v4:uuidv4} = require("uuid")
+const todos = []
 console.log('test')
 
 const requestListener = (request , response) =>{
@@ -26,9 +17,7 @@ const requestListener = (request , response) =>{
   request.on('data',chunk=>{
     body+=chunk
   })
-  request.on('end',()=>{
-    response.end()
-  })
+ 
   if (request.url == '/todos' && request.method == 'GET'){
     response.writeHead(200, headers);
     response.write(JSON.stringify({
@@ -37,12 +26,21 @@ const requestListener = (request , response) =>{
     }));
     response.end();
   }else if(request.url == '/todos' && request.method == 'POST'){
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({
-      "status":"success",
-      "data": "123"
-    }));
-    response.end();
+    request.on('end',()=>{
+      const title = JSON.parse(body).title
+      console.log(title)
+      const todo = {
+        "title" : title,
+        "id" : uuidv4()
+      }
+      todos.push(todo)
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({
+        "status":"success",
+        "data": todos
+      }));
+      response.end()
+    })
   }else if(request.method == 'OPTIONS'){
     response.writeHead(200, headers);
     response.write(JSON.stringify({
