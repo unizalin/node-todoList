@@ -1,11 +1,18 @@
 var http = require("http");
-// http.createServer(function(request, response) {
-//     console.log(request.url)
-//     response.writeHead(200, {"Content-Type": "text/plain"});
-//     response.write("Hello World");
-//     response.end();
-// }).listen(8888);
+
+const {v4:uuid4} = require("uuid")
+const todos = [
+  {
+    "title":"今天第一條",
+    "id" : uuid4()
+  },
+  {
+    "title":"今天第二條",
+    "id" : uuid4()
+  }
+]
 console.log('test')
+
 const requestListener = (request , response) =>{
   console.log(request.url)
   console.log(request.method)
@@ -15,13 +22,20 @@ const requestListener = (request , response) =>{
     'Access-Control-Allow-Methods': 'PATCH, POST, GET,OPTIONS,DELETE',
     'Content-Type': 'application/json'
   }
-  if (request.url == '/' && request.method == 'GET'){
+  if (request.url == '/todos' && request.method == 'GET'){
+    response.writeHead(200, headers);
+    response.write(JSON.stringify({
+      "status":"success",
+      "data": todos
+    }));
+    response.end();
+  }else if(request.method == 'OPTIONS'){
     response.writeHead(200, headers);
     response.write(JSON.stringify({
       "status":"success",
       "data":[]
     }));
-    response.end();
+    response.end()
   }else if(request.url == '/' && request.method == 'DELETE'){
     response.writeHead(200, headers);
     response.write("Delete!");
